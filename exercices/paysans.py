@@ -7,7 +7,7 @@ import pandas as pd
 # Data
 agri = ["M","P","C"] # agriculteurs
 tools = ["H","M","B","T"] # outils
-pref = {"M":["H","T","M","B"], # preferences
+pref = {"M":["H","T","B","M"], # preferences
         "P":["T","M","H","B"],
         "C":["M","T","B","H"]
         }
@@ -37,11 +37,10 @@ for (a,_,day) in agri_tools_days_tuple:
 
 # constraints on preferences
 for a in pref.keys():
-    for d in days:
-        if len(pref[a])>1:
-                for index in range(len(pref[a])-1):
-                        prob += y[a,pref[a][index],d] >= y[a,pref[a][index+1],d] # indexed by +1 and +2 because days start at 1
-                pref[a].pop(0)
+     for index in range(len(pref[a])-1):
+         prob+= lpSum([d * y[a,pref[a][index],d] for d in days] ) <= lpSum([d * y[a,pref[a][index+1],d] for d in days] ) # pour respecter l'ordre des preferences
+         
+    
 for a in agri:
     for t in tools:
         prob += lpSum(d*y[a,t,d] for d in days) <= D # To find the smallest D 
