@@ -1,0 +1,25 @@
+"""
+Exercice de X point
+"""
+
+from pulp import LpProblem, LpMinimize, LpVariable, LpInteger, lpSum, LpStatus
+from pulp import PULP_CBC_CMD
+
+# Data
+
+
+# Modeling problem
+
+# Defining variables
+
+# Adding objective function
+
+# Adding constraints
+
+#Solving problem
+prob.solve(PULP_CBC_CMD(msg=False))
+
+#Solution and status
+print(f"Status : {LpStatus[prob.status]}")
+for v in prob.variables():
+    print(f"{v.name}={v.varValue}")
