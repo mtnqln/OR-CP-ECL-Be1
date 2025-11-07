@@ -9,6 +9,7 @@ from pulp import PULP_CBC_CMD
 
 
 # Modeling problem
+prob = LpProblem("MyProblem",LpMinimize)
 
 # Defining variables
 
