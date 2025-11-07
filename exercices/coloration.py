@@ -48,7 +48,7 @@ for c in colors:
     for s in S:
         prob+=x[s,c] <=y[c] #variable tqui compte le nombre de couleurs differentes
 
-prob += lpSum(y[c] for c in colors) <= MC # contrainte sur le nombre max de couleur
+prob += lpSum(y[c] for c in colors) == MC # contrainte sur le nombre max de couleur
 
 #Solving problem
 prob.solve(PULP_CBC_CMD(msg=False))
