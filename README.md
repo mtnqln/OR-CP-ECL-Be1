@@ -26,3 +26,16 @@ On modèlise avec comme fonction objectif le gain total : prix_tarte1*quantité_
 Comme contrainte on a que le somme totale des ingrédients utilisés par les tartes ne peut être supérieur à la quantité total de de chaque ingrédient.
 
 
+### exercise 4 : voyagge (2)
+
+### exerecise 5 : coloration (2)
+
+### exercise 6 : decoupe_papier (2)
+On procède en 2 étapes pour ce problème, d'abord on calcule toutes les combinaisons possibles (n_135,...,n_42) telles que 135\*n_135 + ... + 42\*n_42 <= 300. Cela correspond au nombre de decoupes possibles d'un rouleau de 300cm en les differentes largeurs souhaitées.
+Ensuite on definit les variables x_p : le nombre de rouleaux de 300m que l'on decoupe sous le pattern p
+On cherche a minimiser la somme des x_p ( le nombre de rouleaux de 300m total )
+Commec contrainte on etablit que : 
+pour tout type de rouleau ( 135, 108 ,...) s, la somme sur les differents patterns p des x_p*a\[s,p\] >= demande(s) ou a\[s,p\] est le nombre de rouleaux du type s produit par un pattern p
+ce qui signifie que pour tout type de rouleau on veut en produire plus ( ou autant ) que le nombre demande.
+
+
