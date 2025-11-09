@@ -38,4 +38,30 @@ Commec contrainte on etablit que :
 pour tout type de rouleau ( 135, 108 ,...) s, la somme sur les differents patterns p des x_p*a\[s,p\] >= demande(s) ou a\[s,p\] est le nombre de rouleaux du type s produit par un pattern p
 ce qui signifie que pour tout type de rouleau on veut en produire plus ( ou autant ) que le nombre demande.
 
+### exercise 8 : restaurant (5)
+Pour ce problème
+### exercise 7 : restaurant_staffing (5)
+On modélise une semaine circulaire (Lun→…→Dim→Lun) avec des blocs 5-on / 2-off.
+
+**Variables**
+* (x_{s,d}\in{0,1}) : le serveur (s) travaille le jour (d).
+* (y_{s,k}\in{0,1}) : le serveur (s) **démarre** son bloc de 5 jours le jour (k).
+* (u_s\in{0,1}) : le serveur (s) est utilisé.
+* (N\in\mathbb{Z}_+) : nombre total de serveurs utilisés.
+
+**Objectif**
+* Minimiser (N).
+
+**Contraintes (idées clés)**
+1. **Compter les serveurs** : (N=\sum_s u_s).
+2. **5 jours consécutifs si utilisé** : (\sum_d x_{s,d}=5,u_s).
+3. **Un seul début de bloc par serveur utilisé** : (\sum_k y_{s,k}=u_s).
+4. **Lien “fenêtre” (mod 7)** :
+   [
+   x_{s,k}=\sum_{t=0}^{4} y_{s,(k-t)\bmod 7}\quad\forall s,k
+   ]
+   (assure 5 jours consécutifs circulaires).
+5. **Couverture du besoin** : (\sum_s x_{s,d}\ge \text{Besoin}(d)) pour chaque jour (d).
+
+
 
