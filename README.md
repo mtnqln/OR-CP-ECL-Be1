@@ -50,13 +50,13 @@ On établit les variables suivantes :
 Notre objectif est donc :
 * Minimiser $N$.
 Et les contraintes sont : 
-1. **Compter les serveurs** : $N=\sum_s u_s$
-2. **5 jours consécutifs si utilisé** : $\sum_d x_{s,d}=5,u_s$
-3. **Un seul début de bloc par serveur utilisé** : $\sum_k y_{s,k}=u_s$
-4. **Lien “fenêtre” (mod 7)** :
+1. *Compter les serveurs* : $N=\sum_s u_s$
+2. *5 jours consécutifs si utilisé*: $\sum_d x_{s,d}=5,u_s$
+3. *Un seul début de bloc par serveur utilisé* : $\sum_k y_{s,k}=u_s$
+4. *Lien “fenêtre” (mod 7)* :
    $x_{s,k}=\sum_{t=0}^{4} y_{s,(k-t)\bmod 7}\quad\forall s,k$
    (assure 5 jours consécutifs circulaires).
-5. **Couverture du besoin** : $\sum_s x_{s,d}\ge \text{Besoin}(d)$ pour chaque jour (d).
+5. *Couverture du besoin* : $\sum_s x_{s,d}\ge \text{Besoin}(d)$ pour chaque jour (d).
 
 
 
