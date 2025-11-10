@@ -2,7 +2,7 @@
 Exercice de X point
 """
 
-from pulp import LpProblem, LpMinimize, LpVariable, LpInteger, lpSum, LpStatus
+from pulp import LpProblem, LpMinimize, LpVariable, LpInteger, lpSum, LpStatus, value, LpBinary
 from pulp import PULP_CBC_CMD
 
 # Data
@@ -22,5 +22,6 @@ prob.solve(PULP_CBC_CMD(msg=False))
 
 #Solution and status
 print(f"Status : {LpStatus[prob.status]}")
+print(f"Objective function value : {value(prob.objective)}")
 for v in prob.variables():
     print(f"{v.name}={v.varValue}")
