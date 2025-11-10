@@ -7,37 +7,74 @@
 Below are the exercises done with the number of points in brackets.
 I detailed how I solved the exercise when I felt it was necessary.
 
+---
+
 ### Exercice 1 : monnaie (1)
 
+---
 
 ### Exercice 2 : paysans (3)
-On choisit une borne UB sur les jours. 
-on definit les variables $y[a,t,d] \in \{0,1\}$  : "(a,t) est fait le jour d"
-On doit alors verifier : 
-- Affectation : $\sum_{d}^{} y[a,t,d] = 1$ pour tout (a,t).
-- Pas de collision outil : pour tout t,d, $\sum_{a}^{} y[a,t,d] ≤ 1$.
-- Pas de collision agriculteur : pour tout a,d, $\sum_{t}^{} y[a,t,d] ≤ 1$.
-- $D ≥ \sum_{d}^{} d * y[a,t,d]$ pour tout (a,t) ~ D est le plus grand des jours nécessaires
-Avec comme objectif min D (min le nombre de jours).
+
+**Modélisation.**
+On se donne un horizon $H$ (borne supérieure sur les jours, p.ex. $H=\text{UB}$).
+Variables binaires $y[a,t,d]\in{0,1}$ : “la tâche $t$ de l’agriculteur $a$ est réalisée le jour $d$”, pour $a\in A$, $t\in T_a$, $d\in{1,\dots,H}$.
+Variable entière $D$ : dernier jour utilisé (makespan).
+
+**Contraintes.**
+
+* **Affectation (exactement un jour par tâche)** :
+  $\displaystyle \sum_{d=1}^{H} y[a,t,d] = 1 \quad \forall(a,t).$
+* **Pas de collision outil (au plus une tâche de type $t$ par jour)** :
+  $\displaystyle \sum_{a} y[a,t,d] \le 1 \quad \forall(t,d).$
+* **Pas de collision agriculteur (au plus une tâche par agriculteur et par jour)** :
+  $\displaystyle \sum_{t} y[a,t,d] \le 1 \quad \forall(a,d).$
+* **Définition du makespan** :
+  $\displaystyle D \ge \sum_{d=1}^{H} d,y[a,t,d] \quad \forall(a,t).$
+
+**Objectif.**
+Minimiser le nombre de jours : $\displaystyle \min D$.
+
+---
 
 ### Exercice 3 : gâteaux (2)
-On doit répondre a la question : combien de tarte le pâtissier doit il faire avec ses stocks et de quels types sont les tartes.
-On modèlise avec comme fonction objectif le gain total : prix_tarte1*quantité_tarte1 + ...
-Comme contrainte on a que le somme totale des ingrédients utilisés par les tartes ne peut être supérieur à la quantité total de de chaque ingrédient.
 
+**Problème.** Déterminer combien de tartes produire (et de quels types) en respectant les stocks d’ingrédients, afin de maximiser le gain.
+**Modélisation.**
+* Variables : $x_k \ge 0$ = nombre de tartes du type $k$.
+* Objectif : maximiser $ \sum_k p_k,x_k$ (où $p_k$ est le prix/marge de la tarte $k$).
+* Contraintes d’ingrédients : pour chaque ingrédient $i$,
+  $\displaystyle \sum_k a_{ik},x_k \le \text{stock}*i$,
+  où $a*{ik}$ est la quantité de l’ingrédient $i$ requise par une tarte $k$.
+* (Optionnel) Intégralité : $x_k \in \mathbb{Z}_+$.
+**Sortie attendue.** Quantités optimales par type de tarte et profit maximal, sous contraintes de stock.
+
+---
 
 ### Exercice 4 : voyage (2)
 
+---
+
 ### Exercice 5 : coloration (2)
 
-### Exercice 6 : decoupe_papier (2)
-On procède en 2 étapes pour ce problème, d'abord on calcule toutes les combinaisons possibles (n_135,...,n_42) telles que 135\*n_135 + ... + 42\*n_42 <= 300. 
-Cela correspond au nombre de decoupes possibles d'un rouleau de 300cm en les differentes largeurs souhaitées.
-Ensuite on definit les variables x_p : le nombre de rouleaux de 300m que l'on decoupe sous le pattern p
-On cherche a minimiser la somme des x_p ( le nombre de rouleaux de 300m total )
-Commec contrainte on etablit que : 
-pour tout type de rouleau ( 135, 108 ,...) s, la somme sur les differents patterns p des x_p*a\[s,p\] >= demande(s) ou a\[s,p\] est le nombre de rouleaux du type s produit par un pattern p
-ce qui signifie que pour tout type de rouleau on veut en produire plus ( ou autant ) que le nombre demande.
+---
+
+### Exercice 6 : découpe_papier (2)
+
+**Idée.** Problème de cutting stock : découper des rouleaux de $300$ cm pour satisfaire la demande en largeurs ${135,108,93,42}$ en utilisant le minimum de rouleaux sources.
+
+**Modélisation par patterns.**
+
+1. Énumérer les schémas (patterns) $p$ : quadruplets $(n_{135},n_{108},n_{93},n_{42})$ tels que
+   $135,n_{135}+108,n_{108}+93,n_{93}+42,n_{42}\le 300$.
+2. Variables : $x_p \in \mathbb{Z}_+$ = nombre de rouleaux de $300$ cm découpés selon le pattern $p$.
+3. Objectif : $\min \sum_p x_p$ (nombre total de rouleaux sources).
+4. Couverture de la demande : pour chaque largeur $s\in{135,108,93,42}$,
+   $\displaystyle \sum_p a_{s,p},x_p \ge \text{demande}(s)$,
+   où $a_{s,p}$ est le nombre de morceaux de largeur $s$ produits par le pattern $p$.
+
+**Sortie attendue.** Nombre minimal de rouleaux de $300$ cm et répartition par patterns (découpe à effectuer).
+
+---
 
 ### Exercice 7 : restaurant (5)
 Pour ce problème : on modélise une semaine circulaire (Lun→…→Dim→Lun) avec des blocs 5-on / 2-off.
@@ -57,6 +94,8 @@ Et les contraintes sont :
    $x_{s,k}=\sum_{t=0}^{4} y_{s,(k-t)\bmod 7}\quad\forall s,k$
    (assure 5 jours consécutifs circulaires).
 5. *Couverture du besoin* : $\sum_s x_{s,d}\ge \text{Besoin}(d)$ pour chaque jour (d).
+
+---
 
 ### Exercice 8 : financement (3)
 
@@ -78,6 +117,8 @@ Le modèle renvoie *Optimal*. Le plan optimal (flux) suit une chaîne “placer 
 
 **Bilan & taux moyen.**
 Croissance globale $1387{,}68/1000$ sur $6$ ans $\Rightarrow$ taux annuel moyen $\approx 5{,}61%$, **légèrement supérieur** au $5%$ de la caisse d’épargne, grâce au timing des obligations plus rémunératrices quand elles sont disponibles.
+
+---
 
 
 
