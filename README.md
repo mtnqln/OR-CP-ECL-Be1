@@ -1,11 +1,10 @@
 # Be 1 Recherche opérationnelle et optimisation
 
-### Technical stack : 
-- python with pulp
-- solver is the default pulp solver which is currently the CBC MILP Solver
+### Outils utilisés : 
+- python avec pulp
+- Le solver est le solver pulp par défault qui est le CBC MILP Solver
 
-Below are the exercises done with the number of points in brackets.
-I detailed how I solved the exercise when I felt it was necessary.
+Ci-dessous sont les exercices du be, j'ai détaillé quand j'ai jugé cela nécessaire.
 
 ---
 
@@ -52,9 +51,56 @@ Minimiser le nombre de jours : $\displaystyle \min D$.
 
 ### Exercice 4 : voyage (2)
 
+**Idée.**
+Trouver une tournée qui passe **une fois** par chaque ville et revient au départ en **minimisant** la distance totale (TSP dirigé).
+
+**Modélisation.**
+
+* Variables : $x_{ij}\in{0,1}$ pour $i\neq j$, vaut $1$ si l’on va de $i$ vers $j$.
+* Objectif : $\min \displaystyle\sum_{i}\sum_{j\ne i} C_{ij},x_{ij}$.
+
+**Contraintes.**
+
+* **Degré sortant** (quitter chaque ville une fois) : $\displaystyle\sum_{j\ne i} x_{ij}=1\quad\forall i$.
+* **Degré entrant** (entrer dans chaque ville une fois) : $\displaystyle\sum_{i\ne j} x_{ij}=1\quad\forall j$.
+* **Élimination des sous-tours** (indispensable, la contrainte “pas de 2-cycle” ne suffit pas) :
+
+  * *Version MTZ* (ajout de variables d’ordre $u_i$) : pour $i\ne j$,
+    $u_i - u_j + n,x_{ij}\le n-1$, avec $1\le u_i\le n$ et fixer $u_{\text{départ}}=1$.
+  * *(Ou)* *SEC* : pour tout sous-ensemble non vide $S\subset V$,
+    $\displaystyle\sum_{i\in S}\sum_{j\in S,,j\ne i} x_{ij} \le |S|-1$.
+
+**Lecture de solution.**
+Suivre les arcs $x_{ij}=1$ depuis la ville de départ pour reconstruire la tournée (une arête sortante et une entrante par ville).
+
 ---
 
 ### Exercice 5 : coloration (2)
+
+**Idée.**
+Colorer les sommets d’un graphe non orienté de sorte que deux sommets adjacents n’aient jamais la même couleur, en **minimisant** le nombre de couleurs utilisées (trouver le nombre chromatique).
+
+**Modélisation (ILP).**
+
+* Variables :
+
+  * $x_{s,c}\in{0,1}$ : vaut $1$ si le sommet $s\in S$ reçoit la couleur $c$.
+  * $y_c\in{0,1}$ : vaut $1$ si la couleur $c$ est utilisée par au moins un sommet.
+  * $MC\in\mathbb{Z}_+$ : nombre total de couleurs utilisées.
+* Objectif : $,\min\ MC$.
+
+**Contraintes.**
+
+* **Conflit sur les arêtes** : pour toute arête $(u,v)\in E$ et toute couleur $c$,
+  $x_{u,c}+x_{v,c}\le 1$ (deux sommets adjacents ne partagent pas la même couleur).
+* **Affectation d’une couleur par sommet** : pour tout $s\in S$,
+  $\sum_{c} x_{s,c}=1$.
+* **Activation des couleurs** : pour tout $s,c$,
+  $x_{s,c}\le y_c$ (si une couleur est assignée, elle est marquée comme utilisée).
+* **Comptage des couleurs** : $\sum_{c} y_c = MC$.
+
+**Sortie attendue.**
+Une affectation $(x_{s,c})$ réalisable et minimale, et la valeur $MC$ (nombre de couleurs utilisées).
 
 ---
 
@@ -119,6 +165,18 @@ Le modèle renvoie *Optimal*. Le plan optimal (flux) suit une chaîne “placer 
 Croissance globale $1387{,}68/1000$ sur $6$ ans $\Rightarrow$ taux annuel moyen $\approx 5{,}61%$, **légèrement supérieur** au $5%$ de la caisse d’épargne, grâce au timing des obligations plus rémunératrices quand elles sont disponibles.
 
 ---
+
+### Exercice 9 : infirmieres (5)
+
+**Idée & modélisation.**
+Trouver un planning hebdomadaire valide (problème de satisfaction) pour 4 infirmières ($i$), 3 shifts ($s$) et 7 jours ($j$). On modélise l’affectation par $x_{i,s,j}=1$ si l’infirmière $i$ prend le shift $s$ le jour $j$. Contraintes principales : $\ge 5$ jours/semaine, $\le 1$ shift/jour.
+La difficulté est la contrainte de **2 infirmières *distinctes* par shift**. On la modélise avec une variable auxiliaire $y_{i,s}=1$ si $i$ travaille *au moins un jour* sur $s$. On lie les variables via "Big-M" : $\sum_j x_{i,s,j} \le M \cdot y_{i,s}$ (force $y=1$ si $\sum x \ge 1$) et $y_{i,s} \le \sum_j x_{i,s,j}$ (force $y=0$ si $\sum x = 0$).
+
+**Contraintes & résolution.**
+D'autres contraintes gèrent les jours consécutifs : interdiction $s_1 \to s_2$ (jours $j$, $j+1$) et obligation de blocs $\ge 2$ jours sur S2/S3 (modélisé par "pas de jour isolé" : $x_{j} \le x_{j-1} + x_{j+1}$). Toutes les contraintes de jours adjacents doivent gérer la boucle Dimanche $\to$ Lundi (via modulo). Le modèle n'a pas d'objectif (maximisation) et renvoie *Optimal* s'il trouve une solution.
+
+**Bilan.**
+Le modèle trouve un planning *faisable*. La complexité réside dans la dissociation entre l'affectation journalière ($x_{i,s,j}$) et la présence hebdomadaire ($y_{i,s}$), qui est la clé pour compter les infirmières distinctes par shift.
 
 
 
