@@ -26,7 +26,11 @@ G = LpVariable.dicts("Voiture_finie_Heure",H,0,N,LpInteger) # nombre de voiture 
 prob += lpSum(G[h] for h in H),"MaximiserNombreVoiture"
 
 # Adding constraints
-prob += g["A",8] <= 30
+prob += lpSum(g["A",h] for h in H) <= N # on dispose de N=30 vehicule au total
+prob += g["B",8] == 0 # pas de vehicules devant les autres ateliers a 8h
+prob += g["C",8] == 0
+prob += g["D",8] == 0
+
 for o in O:
     for h in H:
         prob += lpSum(x[o,a,h] for a in A ) <= 1 # un operateur est dans un seul endroit a la fois

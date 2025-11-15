@@ -6,7 +6,7 @@
 
 Ci-dessous sont les exercices du be, j'ai détaillé quand j'ai jugé cela nécessaire.
 
-Total des points : 25
+Total des points : 30
 ---
 
 ### Exercice 1 : monnaie (1)
