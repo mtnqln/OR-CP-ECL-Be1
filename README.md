@@ -1,10 +1,12 @@
 # Be 1 Recherche opérationnelle et optimisation
 
+Groupe : Martin Quilichini & Evann Kurzawa
+
 ### Outils utilisés : 
 - python avec pulp
 - Le solver est le solver pulp par défault qui est le CBC MILP Solver
 
-Ci-dessous sont les exercices du be, j'ai détaillé quand j'ai jugé cela nécessaire.
+Ci-dessous sont les exercices du be, nous avons détaillé quand nous avons jugé cela nécessaire.
 
 Total des points : 30
 ---
@@ -183,23 +185,30 @@ Le modèle trouve un planning *faisable*. La complexité réside dans la dissoci
 
 ### Exercice 10 : Ateliers véhicules (5)
 
-**Idée & modélisation.**
+**Idée & modélisation.**  
 Trouver un emploi du temps heure par heure pour affecter des ouvriers aux ateliers tout en maximisant le total de véhicules passés dans les
-4 ateliers. On modélise l’affectation par $x_{o,a,h}=1$ si l'ouvrier $i$ travaille l'heure $h$ dans l'atelier $a$. On modèlise aussi le flux de voiture qui traverse un atelier $a$ pendant l'heure $h$ par $g_{a,h}$. On modèlise le nombre de voiture étant passée dans les 4 ateliers à l'heure $h$ par $G_h$.
+4 ateliers. On modélise l’affectation par $x_{o,a,h}=1$ si l'ouvrier $o$ travaille l'heure $h$ dans l'atelier $a$. On modélise aussi le flux de voitures qui traverse un atelier $a$ pendant l'heure $h$ par $g_{a,h}$. On modélise le nombre de voitures étant passées dans les 4 ateliers à l'heure $h$ par $G_h$.
 
-**Contraintes & résolution.**
-On a une première contrainte naturelle sur la présence d'un opérateur à une heure donnée dans 2 ateliers à la fois (impossible) : $\sum_a x_{o,a,h} \ge 1$.
-On a aussi une contrainte sur le lien entre $G$ et $g$, le nombre de véhicule 'finis' est le nombre de véhicule passés dans le dernier atelier à l'heure d'avant : $\forall h G_h = g_{D,h-1}$
-On peut noter la contrainte sur le flux $g$ de production, le flux de voiture qui traverse une usine est inférieur ou égal à la capacité totale de production par heure de l'usine et ce flux est inférieur au nombre de voiture fournie par l'usine précédente à l'heure précédente. Donc : 
-- $$
-- $$
-Comme contraintes de bord, les 4 premières heures on ne peut pas avoir sorti de véhicule des 4 ateliers. Donc $ \forall 8 \le h \le 11 , G_h=0$
-Enfin dernière contrainte, un ouvrier doit respecter ses horaires.
- 
-Le modèle a pour objectif de maximiser le nombre de voiture passée dans les 4 ateliers et renvoie *Optimal* s'il trouve une solution.
+**Contraintes & résolution.**  
+On a une première contrainte naturelle sur la présence d'un opérateur à une heure donnée dans 2 ateliers à la fois (impossible) :  
+$\sum_a x_{o,a,h} \le 1$.
 
-**Bilan.**
-Le modèle trouve un planning *optimale* qui est fournie dans le code sous forme d'une DataFrame pandas.
+On a aussi une contrainte sur le lien entre $G$ et $g$, le nombre de véhicules « finis » est le nombre de véhicules passés dans le dernier atelier à l'heure d'avant :  
+$\forall h,\ G_h = g_{D,h-1}$.
+
+On peut noter la contrainte sur le flux $g$ de production, le flux de voitures qui traverse une usine est inférieur ou égal à la capacité totale de production par heure de l'usine et ce flux est inférieur au nombre de voitures fournies par l'usine précédente à l'heure précédente. Donc : 
+- $\forall a,h,\quad g_{a,h} \le C_a \sum_o x_{o,a,h}$  
+- $\forall h,\quad g_{B,h} \le g_{A,h-1},\ g_{C,h} \le g_{B,h-1},\ g_{D,h} \le g_{C,h-1}$  
+
+Comme contraintes de bord, les 4 premières heures on ne peut pas avoir sorti de véhicule des 4 ateliers. Donc  
+$\forall\, 8 \le h \le 11,\ G_h = 0$.  
+
+Enfin, dernière contrainte, un ouvrier doit respecter ses horaires.
+
+Le modèle a pour objectif de maximiser le nombre de voitures passées dans les 4 ateliers et renvoie *Optimal* s'il trouve une solution.
+
+**Bilan.**  
+Le modèle trouve un planning *optimal* qui est fourni dans le code sous forme d'une DataFrame pandas.
 
 
 
