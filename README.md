@@ -6,6 +6,7 @@
 
 Ci-dessous sont les exercices du be, j'ai détaillé quand j'ai jugé cela nécessaire.
 
+Total des points : 25
 ---
 
 ### Exercice 1 : monnaie (1)
@@ -178,6 +179,27 @@ D'autres contraintes gèrent les jours consécutifs : interdiction $s_1 \to s_2$
 **Bilan.**
 Le modèle trouve un planning *faisable*. La complexité réside dans la dissociation entre l'affectation journalière ($x_{i,s,j}$) et la présence hebdomadaire ($y_{i,s}$), qui est la clé pour compter les infirmières distinctes par shift.
 
+--- 
+
+### Exercice 10 : Ateliers véhicules (5)
+
+**Idée & modélisation.**
+Trouver un emploi du temps heure par heure pour affecter des ouvriers aux ateliers tout en maximisant le total de véhicules passés dans les
+4 ateliers. On modélise l’affectation par $x_{o,a,h}=1$ si l'ouvrier $i$ travaille l'heure $h$ dans l'atelier $a$. On modèlise aussi le flux de voiture qui traverse un atelier $a$ pendant l'heure $h$ par $g_{a,h}$. On modèlise le nombre de voiture étant passée dans les 4 ateliers à l'heure $h$ par $G_h$.
+
+**Contraintes & résolution.**
+On a une première contrainte naturelle sur la présence d'un opérateur à une heure donnée dans 2 ateliers à la fois (impossible) : $\sum_a x_{o,a,h} \ge 1$.
+On a aussi une contrainte sur le lien entre $G$ et $g$, le nombre de véhicule 'finis' est le nombre de véhicule passés dans le dernier atelier à l'heure d'avant : $\forall h G_h = g_{D,h-1}$
+On peut noter la contrainte sur le flux $g$ de production, le flux de voiture qui traverse une usine est inférieur ou égal à la capacité totale de production par heure de l'usine et ce flux est inférieur au nombre de voiture fournie par l'usine précédente à l'heure précédente. Donc : 
+- $$
+- $$
+Comme contraintes de bord, les 4 premières heures on ne peut pas avoir sorti de véhicule des 4 ateliers. Donc $ \forall 8 \le h \le 11 , G_h=0$
+Enfin dernière contrainte, un ouvrier doit respecter ses horaires.
+ 
+Le modèle a pour objectif de maximiser le nombre de voiture passée dans les 4 ateliers et renvoie *Optimal* s'il trouve une solution.
+
+**Bilan.**
+Le modèle trouve un planning *optimale* qui est fournie dans le code sous forme d'une DataFrame pandas.
 
 
 
